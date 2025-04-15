@@ -12,24 +12,23 @@ db.nurseAssignments.drop();
 
 // Tạo các collection với bộ kiểm tra dữ liệu
 db.createCollection("doctors", {
-  validator: {
-    $jsonSchema: {
-      bsonType: "object",
-      required: ["ma_bacsi", "so_cmt", "ho_ten", "ngay_sinh", "dia_chi", "bac_nghe", "tham_nien", "trinh_do", "chuyen_mon"],
-      properties: {
-        ma_bacsi: { bsonType: "string", description: "Mã số BS - bắt buộc và phải là chuỗi" },
-        so_cmt: { bsonType: "string", description: "Số CMT - bắt buộc và phải là chuỗi" },
-        ho_ten: { bsonType: "string", description: "Họ tên - bắt buộc và phải là chuỗi" },
-        ngay_sinh: { bsonType: "date", description: "Ngày sinh - bắt buộc và phải là kiểu ngày tháng" },
-        dia_chi: { bsonType: "string", description: "Địa chỉ - bắt buộc và phải là chuỗi" },
-        bac_nghe: { bsonType: "string", description: "Bậc nghề - bắt buộc và phải là chuỗi" },
-        tham_nien: { bsonType: "int", description: "Thâm niên - bắt buộc và phải là số nguyên" },
-        trinh_do: { bsonType: "string", description: "Trình độ đào tạo - bắt buộc và phải là chuỗi" },
-        chuyen_mon: { bsonType: "string", description: "Chuyên môn - bắt buộc và phải là chuỗi" },
-        so_dien_thoai: { bsonType: "string", description: "Số điện thoại - phải là chuỗi" }
-      }
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ["ma_bacsi", "so_cmt", "ho_ten", "ngay_sinh", "dia_chi", "bac_nghe", "tham_nien", "trinh_do", "chuyen_mon"],
+            properties: {
+                ma_bacsi: { bsonType: "string", description: "Mã số BS - bắt buộc và phải là chuỗi" },
+                so_cmt: { bsonType: "string", description: "Số CMT - bắt buộc và phải là chuỗi" }, 
+                ho_ten: { bsonType: "string", description: "Họ tên - bắt buộc và phải là chuỗi" },
+                ngay_sinh: { bsonType: "date", description: "Ngày sinh - bắt buộc và phải là kiểu ngày tháng" },
+                dia_chi: { bsonType: "string", description: "Địa chỉ - bắt buộc và phải là chuỗi" },
+                bac_nghe: { bsonType: "string", description: "Bậc nghề - bắt buộc và phải là chuỗi" },
+                tham_nien: { bsonType: "int", description: "Thâm niên - bắt buộc và phải là số nguyên" },
+                trinh_do: { bsonType: "string", description: "Trình độ đào tạo - bắt buộc và phải là chuỗi" },
+                chuyen_mon: { bsonType: "string", description: "Chuyên môn - bắt buộc và phải là chuỗi" }
+            }
+        }
     }
-  }
 });
 
 db.createCollection("nurses", {
@@ -80,7 +79,7 @@ db.createCollection("visits", {
         ngay_vao: { bsonType: "date", description: "Ngày vào viện - bắt buộc và phải là kiểu ngày tháng" },
         ngay_ra: { bsonType: "date", description: "Ngày ra viện - bắt buộc và phải là kiểu ngày tháng" },
         chan_doan: { bsonType: "string", description: "Chẩn đoán bệnh - bắt buộc và phải là chuỗi" },
-        tong_tien: { bsonType: "double", description: "Tổng số tiền khám/chữa bệnh - bắt buộc và phải là số thực" }
+        tong_tien: { bsonType: "int", description: "Tổng số tiền khám/chữa bệnh - bắt buộc và phải là số nguyên" }
       }
     }
   }
@@ -95,7 +94,7 @@ db.createCollection("medicines", {
         ma_thuoc: { bsonType: "string", description: "Mã số thuốc - bắt buộc và phải là chuỗi" },
         ten_thuoc: { bsonType: "string", description: "Tên thuốc - bắt buộc và phải là chuỗi" },
         don_vi: { bsonType: "string", description: "Đơn vị - bắt buộc và phải là chuỗi" },
-        gia_thuoc: { bsonType: "double", description: "Giá tiền - bắt buộc và phải là số thực" }
+        gia_thuoc: { bsonType: "int", description: "Giá tiền - bắt buộc và phải là số nguyên" }
       }
     }
   }
@@ -111,7 +110,7 @@ db.createCollection("prescriptions", {
         ma_lankham: { bsonType: "string", description: "Mã số lần khám - bắt buộc và phải là chuỗi" },
         ma_thuoc: { bsonType: "string", description: "Mã số thuốc - bắt buộc và phải là chuỗi" },
         so_luong: { bsonType: "int", description: "Số lượng - bắt buộc và phải là số nguyên" },
-        thanh_tien: { bsonType: "double", description: "Tổng chi phí thuốc - bắt buộc và phải là số thực" },
+        thanh_tien: { bsonType: "int", description: "Tổng chi phí thuốc - bắt buộc và phải là số nguyên" },
         huong_dan: { bsonType: "string", description: "Hướng dẫn sử dụng - bắt buộc và phải là chuỗi" }
       }
     }
@@ -170,7 +169,6 @@ db.doctors.insertMany([
     tham_nien: 20,
     trinh_do: "Tiến sĩ Y khoa",
     chuyen_mon: "Tim mạch",
-    so_dien_thoai: "0901234567"
   },
   {
     ma_bacsi: "BS002",
@@ -182,7 +180,6 @@ db.doctors.insertMany([
     tham_nien: 15,
     trinh_do: "Thạc sĩ Y khoa",
     chuyen_mon: "Nhi khoa",
-    so_dien_thoai: "0912345678"
   },
   {
     ma_bacsi: "BS003",
@@ -194,7 +191,6 @@ db.doctors.insertMany([
     tham_nien: 10,
     trinh_do: "Bác sĩ Y khoa",
     chuyen_mon: "Nội tổng quát",
-    so_dien_thoai: "0923456789"
   },
   {
     ma_bacsi: "BS004",
@@ -206,7 +202,6 @@ db.doctors.insertMany([
     tham_nien: 18,
     trinh_do: "Tiến sĩ Y khoa",
     chuyen_mon: "Da liễu",
-    so_dien_thoai: "0934567890"
   },
   {
     ma_bacsi: "BS005",
@@ -218,7 +213,6 @@ db.doctors.insertMany([
     tham_nien: 13,
     trinh_do: "Thạc sĩ Y khoa",
     chuyen_mon: "Tai mũi họng",
-    so_dien_thoai: "0945678901"
   }
 ]);
 
