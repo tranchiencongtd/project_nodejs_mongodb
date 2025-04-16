@@ -1,0 +1,176 @@
+<%- include('./partials/header') %>
+
+<h2>Báo cáo doanh thu</h2>
+
+<div class="card">
+  <form method="POST" action="/revenue">
+    <div class="form-group" style="display: flex;align-content: center;padding: 10px;">
+      <div style="flex: 1;">
+        <label for="month">Tháng:</label>
+        <select id="month" name="month" required>
+          <% for(let i = 1; i <= 12; i++) { %>
+            <option value="<%= i %>" <%= i == month ? 'selected' : '' %>><%= i %></option>
+          <% } %>
+        </select>
+      </div>
+      <div style="flex: 1;margin-left: 10px;">
+        <label for="year">Năm:</label>
+        <input type="number" id="year" name="year" value="<%= year %>" min="2000" max="2100" required>
+      </div>
+    </div>
+    <div style="text-align: center;">
+        <button type="submit">Xem báo cáo</button>
+    </div>
+  </form>
+</div>
+
+<% if (data) { %>
+  <div class="card mt-4">
+    <h3>Tổng quan doanh thu tháng <%= month %>/<%= year %></h3>
+    
+    <div class="summary-box">
+      <div class="summary-content">
+        <div class="summary-item">
+          <div class="summary-label">Doanh thu khám bệnh:</div>
+          <div class="summary-value"><%= data.totalMedicalRevenue.toLocaleString('vi-VN') %> đ</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">Doanh thu thuốc:</div>
+          <div class="summary-value"><%= data.totalMedicineRevenue.toLocaleString('vi-VN') %> đ</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">Tổng doanh thu:</div>
+          <div class="summary-value"><%= data.totalRevenue.toLocaleString('vi-VN') %> đ</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">Tổng lượt khám:</div>
+          <div class="summary-value"><%= data.totalVisits %> lượt</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">Tổng đơn thuốc:</div>
+          <div class="summary-value"><%= data.totalPrescriptions %> đơn</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <% if (data.revenueByDisease && data.revenueByDisease.length > 0) { %>
+    <div class="card mt-4">
+      <h3>Chi tiết Doanh thu theo Bệnh</h3>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Bệnh</th>
+            <th>Số lượt khám</th>
+            <th>Doanh thu khám</th>
+            <th>Doanh thu thuốc</th>
+            <th>Tổng doanh thu</th>
+            <th>Tỷ lệ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% data.revenueByDisease.forEach((item, index) => { %>
+            <tr>
+              <td><%= index + 1 %></td>
+              <td><%= item.benh %></td>
+              <td class="text-center"><%= item.so_luot_kham %></td>
+              <td class="text-right"><%= item.doanh_thu_kham.toLocaleString('vi-VN') %> đ</td>
+              <td class="text-right"><%= item.doanh_thu_thuoc.toLocaleString('vi-VN') %> đ</td>
+              <td class="text-right text-bold"><%= item.tong_doanh_thu.toLocaleString('vi-VN') %> đ</td>
+              <td class="text-center">
+                <%= ((item.tong_doanh_thu / data.totalRevenue) * 100).toFixed(2) %>%
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2" class="text-right text-bold">Tổng cộng:</td>
+            <td class="text-center text-bold">
+              <%= data.revenueByDisease.reduce((sum, item) => sum + item.so_luot_kham, 0) %>
+            </td>
+            <td class="text-right text-bold">
+              <%= data.revenueByDisease.reduce((sum, item) => sum + item.doanh_thu_kham, 0).toLocaleString('vi-VN') %> đ
+            </td>
+            <td class="text-right text-bold">
+              <%= data.revenueByDisease.reduce((sum, item) => sum + item.doanh_thu_thuoc, 0).toLocaleString('vi-VN') %> đ
+            </td>
+            <td class="text-right text-bold">
+              <%= data.revenueByDisease.reduce((sum, item) => sum + item.tong_doanh_thu, 0).toLocaleString('vi-VN') %> đ
+            </td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    
+    <div class="card mt-4">
+      <h3>Phân tích Doanh thu</h3>
+      
+      <div style="display: flex; gap: 20px;">
+        <div style="flex: 1;">
+          <h4>Tỷ lệ doanh thu theo nguồn</h4>
+          <table>
+            <thead>
+              <tr>
+                <th>Nguồn</th>
+                <th>Doanh thu</th>
+                <th>Tỷ lệ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Khám bệnh</td>
+                <td class="text-right"><%= data.totalMedicalRevenue.toLocaleString('vi-VN') %> đ</td>
+                <td class="text-center">
+                  <%= ((data.totalMedicalRevenue / data.totalRevenue) * 100).toFixed(2) %>%
+                </td>
+              </tr>
+              <tr>
+                <td>Thuốc</td>
+                <td class="text-right"><%= data.totalMedicineRevenue.toLocaleString('vi-VN') %> đ</td>
+                <td class="text-center">
+                  <%= ((data.totalMedicineRevenue / data.totalRevenue) * 100).toFixed(2) %>%
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div style="flex: 1;">
+          <h4>Top 5 bệnh doanh thu cao nhất</h4>
+          <table>
+            <thead>
+              <tr>
+                <th>STT</th>
+                <th>Bệnh</th>
+                <th>Doanh thu</th>
+                <th>Tỷ lệ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% data.revenueByDisease.slice(0, 5).forEach((item, index) => { %>
+                <tr>
+                  <td><%= index + 1 %></td>
+                  <td><%= item.benh %></td>
+                  <td class="text-right"><%= item.tong_doanh_thu.toLocaleString('vi-VN') %> đ</td>
+                  <td class="text-center">
+                    <%= ((item.tong_doanh_thu / data.totalRevenue) * 100).toFixed(2) %>%
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% } else { %>
+    <div class="card mt-4">
+      <p>Không có dữ liệu doanh thu trong tháng <%= month %>/<%= year %>.</p>
+    </div>
+  <% } %>
+<% } %>
+
+<%- include('./partials/footer') %>

@@ -474,50 +474,47 @@ function calculateRevenue(year, month) {
       $group: {
         _id: "$chan_doan",
         medical_revenue: { $sum: "$tong_tien" },
-        visit_count: { $sum: 1 }
+        visit_count: { $sum: 1 },
+        lankham_ids: { $push: "$ma_lankham" }
       }
-    },
-    {
-      $lookup: {
-        from: "prescriptions",
-        localField: "ma_lankham",
-        foreignField: "ma_lankham",
-        as: "prescriptions"
-      }
-    },
-    {
-      $unwind: {
-        path: "$prescriptions",
-        preserveNullAndEmptyArrays: true
-      }
-    },
-    {
-      $group: {
-        _id: "$_id",
-        medical_revenue: { $first: "$medical_revenue" },
-        medicine_revenue: { $sum: "$prescriptions.thanh_tien" },
-        visit_count: { $first: "$visit_count" }
-      }
-    },
-    {
-      $project: {
-        _id: 0,
-        benh: "$_id",
-        doanh_thu_kham: "$medical_revenue",
-        doanh_thu_thuoc: "$medicine_revenue",
-        tong_doanh_thu: { $add: ["$medical_revenue", "$medicine_revenue"] },
-        so_luot_kham: "$visit_count"
-      }
-    },
-    {
-      $sort: { tong_doanh_thu: -1 }
     }
   ]).toArray();
+  
+  // Lấy doanh thu thuốc cho từng bệnh
+  const revenueWithMeds = revenueByDisease.map(disease => {
+    // Tìm tất cả đơn thuốc liên quan đến các lần khám của bệnh này
+    const medRevenue = db.prescriptions.aggregate([
+      {
+        $match: {
+          ma_lankham: { $in: disease.lankham_ids }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          medicine_revenue: { $sum: "$thanh_tien" }
+        }
+      }
+    ]).toArray();
+    
+    const medicineRevenue = medRevenue.length > 0 ? medRevenue[0].medicine_revenue : 0;
+    
+    return {
+      benh: disease._id,
+      doanh_thu_kham: disease.medical_revenue,
+      doanh_thu_thuoc: medicineRevenue,
+      tong_doanh_thu: disease.medical_revenue + medicineRevenue,
+      so_luot_kham: disease.visit_count
+    };
+  });
+  
+  // Sắp xếp theo tổng doanh thu giảm dần
+  revenueWithMeds.sort((a, b) => b.tong_doanh_thu - a.tong_doanh_thu);
   
   print("| STT | Tên bệnh                  | Số lượt | DT Khám        | DT Thuốc       | Tổng DT        |");
   print("|-----|---------------------------|---------|----------------|----------------|----------------|");
   
-  revenueByDisease.forEach((item, index) => {
+  revenueWithMeds.forEach((item, index) => {
     const stt = (index + 1).toString().padEnd(3);
     const benh = item.benh.padEnd(25);
     const soLuot = item.so_luot_kham.toString().padEnd(7);
@@ -549,7 +546,7 @@ function formatCurrency(amount) {
 // Phần thực thi chính
 
 // Yêu cầu 1: Liệt kê danh sách các loại bệnh trong tháng
-// getDiseaseStatsByMonth(2025, 3); // Tháng 3, năm 2025
+getDiseaseStatsByMonth(2025, 3); // Tháng 3, năm 2025
 
 // Yêu cầu 2: Tính lương bác sĩ và y tá
 calculateSalaries(2025, 3); // Tháng 3, năm 2025
@@ -560,41 +557,3 @@ getPatientHistory("BN001"); // Tìm theo mã bệnh nhân
 
 // Yêu cầu 4: Tính doanh thu phòng khám
 calculateRevenue(2025, 3); // Tháng 3, năm 2025
-
-// Báo cáo tổng hợp theo yêu cầu
-function generateComprehensiveReport(year, month) {
-  const targetMonth = parseInt(month);
-  const targetYear = parseInt(year);
-  
-  
-  print(`\n========================================================`);
-  print(`      BÁO CÁO TỔNG HỢP THÁNG ${targetMonth}/${targetYear}`);
-  print(`========================================================\n`);
-  
-  // 1. Thống kê bệnh
-  getDiseaseStatsByMonth(targetYear, targetMonth);
-  
-  // 2. Tính lương
-  calculateSalaries(targetYear, targetMonth);
-  
-  // 3. Tính doanh thu
-  calculateRevenue(targetYear, targetMonth);
-  
-  print(`\n========================================================`);
-  print(`                  KẾT THÚC BÁO CÁO`);
-  print(`========================================================\n`);
-}
-
-// Chạy báo cáo tổng hợp cho tháng hiện tại
-// const today = new Date();
-// generateComprehensiveReport(today.getFullYear(), today.getMonth() + 1);
-
-// Hướng dẫn sử dụng
-/*
-print("\nHƯỚNG DẪN SỬ DỤNG:");
-print("1. Để xem thống kê bệnh: getDiseaseStatsByMonth(năm, tháng)");
-print("2. Để tính lương: calculateSalaries(năm, tháng)");
-print("3. Để xem thông tin bệnh nhân: getPatientHistory(\"mã_BN\" hoặc \"tên_BN\")");
-print("4. Để tính doanh thu: calculateRevenue(năm, tháng)");
-print("5. Để tạo báo cáo tổng hợp: generateComprehensiveReport(năm, tháng)");
-*/

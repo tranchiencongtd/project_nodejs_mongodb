@@ -1,0 +1,22 @@
+{
+  "name": "clinic-management-system",
+  "version": "1.0.0",
+  "description": "Phòng khám quản lý hệ thống",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "ejs": "^3.1.9",
+    "mongodb": "^6.1.0",
+    "mongoose": "^7.5.3",
+    "body-parser": "^1.20.2",
+    "moment": "^2.29.4",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

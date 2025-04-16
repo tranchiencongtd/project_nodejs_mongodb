@@ -1,0 +1,194 @@
+<%- include('./partials/header') %>
+
+<h2>Thông tin Bệnh nhân</h2>
+
+<div class="card">
+  <form method="POST" action="/patients">
+    <div class="form-group" style="display: flex;">
+      <div style="flex: 1;">
+        <label for="patientId">Mã bệnh nhân hoặc Tên bệnh nhân:</label>
+        <input type="text" id="patientId" name="patientId" placeholder="Nhập mã BN hoặc tên bệnh nhân" 
+          value="<%= typeof patientId !== 'undefined' ? patientId : '' %>" required>
+        <small> Ví dụ: BN001 hoặc Nguyễn Văn A</small>
+      </div>
+    </div>
+    <div style="text-align: center;">
+        <button type="submit">Tìm kiếm</button>
+      </div>
+  </form>
+</div>
+
+<% if (data && data.error) { %>
+  <div class="card mt-4">
+    <p><%= data.error %></p>
+  </div>
+<% } else if (data && data.patient) { %>
+  <div class="card mt-4">
+    <h3>Thông tin cá nhân</h3>
+    
+    <div class="info-group">
+      <span class="info-label">Mã bệnh nhân:</span>
+      <span><%= data.patient.ma_benhnhan %></span>
+    </div>
+    
+    <div class="info-group">
+      <span class="info-label">Họ tên:</span>
+      <span><%= data.patient.ho_ten %></span>
+    </div>
+    
+    <div class="info-group">
+      <span class="info-label">Ngày sinh:</span>
+      <span><%= moment(data.patient.ngay_sinh).format('DD/MM/YYYY') %></span>
+    </div>
+    
+    <div class="info-group">
+      <span class="info-label">Số CMT:</span>
+      <span><%= data.patient.so_cmt %></span>
+    </div>
+    
+    <div class="info-group">
+      <span class="info-label">Địa chỉ:</span>
+      <span><%= data.patient.dia_chi %></span>
+    </div>
+    
+    <div class="info-group">
+      <span class="info-label">Số điện thoại:</span>
+      <span><%= data.patient.so_dien_thoai %></span>
+    </div>
+  </div>
+  
+  <% if (data.currentDiseases && data.currentDiseases.length > 0) { %>
+    <div class="card mt-4">
+      <h3>Bệnh hiện tại</h3>
+      <ul>
+        <% data.currentDiseases.forEach(disease => { %>
+          <li><%= disease %></li>
+        <% }); %>
+      </ul>
+    </div>
+  <% } %>
+  
+  <div class="card mt-4">
+    <h3>Lịch sử khám bệnh</h3>
+    
+    <% if (data.visits && data.visits.length > 0) { %>
+      <table>
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Mã lần khám</th>
+            <th>Ngày vào</th>
+            <th>Ngày ra</th>
+            <th>Chẩn đoán</th>
+            <th>Bác sĩ</th>
+            <th>Chi phí</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% data.visits.forEach((visit, index) => { %>
+            <tr>
+              <td><%= index + 1 %></td>
+              <td><%= visit.ma_lankham %></td>
+              <td><%= moment(visit.ngay_vao).format('DD/MM/YYYY') %></td>
+              <td>
+                <%= visit.ngay_ra ? moment(visit.ngay_ra).format('DD/MM/YYYY') : 'Đang điều trị' %>
+              </td>
+              <td><%= visit.chan_doan %></td>
+              <td><%= visit.doctor.ho_ten %></td>
+              <td class="text-right">
+                <%= visit.tong_tien ? visit.tong_tien.toLocaleString('vi-VN') + ' đ' : '-' %>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="6" class="text-right text-bold">Tổng chi phí:</td>
+            <td class="text-right text-bold">
+              <%= data.visits.reduce((sum, visit) => sum + (visit.tong_tien || 0), 0).toLocaleString('vi-VN') %> đ
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    <% } else { %>
+      <p>Bệnh nhân chưa có lần khám nào.</p>
+    <% } %>
+  </div>
+  
+  <% if (data.diseaseHistory && Object.keys(data.diseaseHistory).length > 0) { %>
+    <div class="card mt-4">
+      <h3>Thống kê bệnh</h3>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Bệnh</th>
+            <th>Số lần mắc</th>
+            <th>Lần đầu mắc</th>
+            <th>Lần gần nhất</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% Object.keys(data.diseaseHistory).forEach(disease => { %>
+            <tr>
+              <td><%= disease %></td>
+              <td class="text-center"><%= data.diseaseHistory[disease].occurrences %></td>
+              <td><%= moment(data.diseaseHistory[disease].first_visit).format('DD/MM/YYYY') %></td>
+              <td><%= moment(data.diseaseHistory[disease].latest_visit).format('DD/MM/YYYY') %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+  
+  <% if (data.latestPrescriptions && data.latestPrescriptions.length > 0) { %>
+    <div class="card mt-4">
+      <h3>Đơn thuốc gần nhất</h3>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Mã thuốc</th>
+            <th>Tên thuốc</th>
+            <th>Số lượng</th>
+            <th>Đơn vị</th>
+            <th>Đơn giá</th>
+            <th>Thành tiền</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% data.latestPrescriptions.forEach((prescription, index) => { %>
+            <tr>
+              <td><%= index + 1 %></td>
+              <td><%= prescription.ma_thuoc %></td>
+              <td><%= prescription.ten_thuoc %></td>
+              <td class="text-center"><%= prescription.so_luong %></td>
+              <td><%= prescription.don_vi %></td>
+              <td class="text-right"><%= prescription.gia_thuoc.toLocaleString('vi-VN') %> đ</td>
+              <td class="text-right"><%= prescription.thanh_tien.toLocaleString('vi-VN') %> đ</td>
+            </tr>
+          <% }); %>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="6" class="text-right text-bold">Tổng tiền thuốc:</td>
+            <td class="text-right text-bold">
+              <%= data.latestPrescriptions.reduce((sum, prescription) => sum + prescription.thanh_tien, 0).toLocaleString('vi-VN') %> đ
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+      
+      <% if (data.latestPrescriptions[0].huong_dan) { %>
+        <div class="mt-4">
+          <h4>Hướng dẫn sử dụng:</h4>
+          <p><%= data.latestPrescriptions[0].huong_dan %></p>
+        </div>
+      <% } %>
+    </div>
+  <% } %>
+<% } %>
+
+<%- include('./partials/footer') %>

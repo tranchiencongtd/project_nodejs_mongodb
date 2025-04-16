@@ -1,0 +1,84 @@
+<%- include('./partials/header') %>
+
+<h2>Thống kê Bệnh theo Tháng</h2>
+
+<div class="card">
+  <form method="POST" action="/diseases">
+    <div class="form-group" style="display: flex;align-content: center;padding: 10px;">
+      <div style="flex: 1;">
+        <label for="month">Tháng:</label>
+        <select id="month" name="month" required>
+          <% for(let i = 1; i <= 12; i++) { %>
+            <option value="<%= i %>" <%= i == month ? 'selected' : '' %>><%= i %></option>
+          <% } %>
+        </select>
+      </div>
+      <div style="flex: 1;margin-left: 10px;">
+        <label for="year">Năm:</label>
+        <input type="number" id="year" name="year" value="<%= year %>" min="2000" max="2100" required>
+      </div>
+    </div>
+    <div style="text-align: center;">
+        <button type="submit">Xem thống kê</button>
+    </div>
+  </form>
+</div>
+
+<% if (data && data.length > 0) { %>
+  <div class="card mt-4">
+    <h3>Kết quả Thống kê Bệnh trong tháng <%= month %>/<%= year %></h3>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>STT</th>
+          <th>Bệnh</th>
+          <th>Số bệnh nhân</th>
+          <th>Tổng lượt khám</th>
+          <th>Trung bình lượt khám/bệnh nhân</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% data.forEach((item, index) => { %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td><%= item.benh %></td>
+            <td class="text-center"><%= item.so_benh_nhan %></td>
+            <td class="text-center"><%= item.tong_luot_kham %></td>
+            <td class="text-center">
+              <%= (item.tong_luot_kham / item.so_benh_nhan).toFixed(2) %>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+    
+    <div class="summary-box mt-4">
+      <div class="summary-title">Tổng kết:</div>
+      <div class="summary-content">
+        <div class="summary-item">
+          <div class="summary-label">Tổng số loại bệnh:</div>
+          <div class="summary-value"><%= data.length %></div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">Tổng số bệnh nhân:</div>
+          <div class="summary-value">
+            <%= data.reduce((sum, item) => sum + item.so_benh_nhan, 0) %>
+          </div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">Tổng lượt khám:</div>
+          <div class="summary-value">
+            <%= data.reduce((sum, item) => sum + item.tong_luot_kham, 0) %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% } else if (data) { %>
+  <div class="card mt-4">
+    <p>Không có dữ liệu bệnh trong tháng <%= month %>/<%= year %>.</p>
+  </div>
+<% } %>
+
+<%- include('./partials/footer') %>

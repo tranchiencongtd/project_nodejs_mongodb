@@ -1,0 +1,13 @@
+<%- include('./partials/header') %>
+
+<h2>Lỗi</h2>
+
+<div class="card">
+  <div style="color: #721c24; background-color: #f8d7da; padding: 20px; border-radius: 5px; border-left: 5px solid #f5c6cb;">
+    <h3>Đã xảy ra lỗi</h3>
+    <p><%= message || 'Đã xảy ra lỗi không mong muốn. Vui lòng thử lại sau.' %></p>
+    <a href="javascript:history.back()" class="btn">Quay lại</a>
+  </div>
+</div>
+
+<%- include('./partials/footer') %>
