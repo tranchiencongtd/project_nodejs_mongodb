@@ -1,8 +1,8 @@
-# Hướng dẫn cài đặt và chạy ứng dụng quản lý phòng khám
+# Hướng dẫn cài đặt
 
 ## Giới thiệu
 
-Ứng dụng Quản lý Phòng khám là một ứng dụng web Node.js giúp quản lý và hiển thị dữ liệu từ hệ thống phòng khám. Ứng dụng cung cấp các chức năng:
+Ứng dụng Quản lý Phòng khám:
 
 - **Thống kê Bệnh**: Phân tích các loại bệnh được điều trị theo tháng
 - **Bảng Lương**: Tính lương cho bác sĩ và y tá

@@ -3,13 +3,13 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const { MongoClient } = require('mongodb');
 const moment = require('moment');
-require('dotenv').config(); // Thêm để đọc file .env
+require('dotenv').config(); 
 
 // Cấu hình ứng dụng
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Kết nối MongoDB - Sử dụng biến môi trường từ file .env
+// Kết nối MongoDB 
 const mongoURI = process.env.MONGODB_URI;
 const dbName = process.env.DB_NAME;
 

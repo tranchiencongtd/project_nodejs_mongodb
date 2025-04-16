@@ -1,8 +1,4 @@
-
-
-/**
- * Lấy thống kê bệnh theo tháng
- */
+// Lấy thống kê bệnh theo tháng
 async function getDiseaseStatsByMonth(db, year, month) {
   // Chuyển đổi tháng để đảm bảo định dạng phù hợp (1-12)
   const targetMonth = parseInt(month);
@@ -70,9 +66,7 @@ async function getDiseaseStatsByMonth(db, year, month) {
   return result;
 }
 
-/**
- * Tính lương của các Bác sĩ và Y tá trong tháng
- */
+// Tính lương của các Bác sĩ và Y tá trong tháng
 async function calculateSalaries(db, year, month) {
   // Chuyển đổi tháng để đảm bảo định dạng phù hợp (1-12)
   const targetMonth = parseInt(month);
@@ -187,9 +181,7 @@ async function calculateSalaries(db, year, month) {
   };
 }
 
-/**
- * Hiển thị thông tin một bệnh nhân và lịch sử khám chữa bệnh
- */
+// Hiển thị thông tin một bệnh nhân và lịch sử khám chữa bệnh
 async function getPatientHistory(db, patientId) {
   patientId = patientId.trim(); // Loại bỏ khoảng trắng đầu và cuối
   // Tìm bệnh nhân theo ID hoặc tên
@@ -283,9 +275,7 @@ async function getPatientHistory(db, patientId) {
   };
 }
 
-/**
- * Tính doanh thu của phòng khám
- */
+// Tính doanh thu của phòng khám
 async function calculateRevenue(db, year, month) {
   // Chuyển đổi tháng để đảm bảo định dạng phù hợp (1-12)
   const targetMonth = parseInt(month);
