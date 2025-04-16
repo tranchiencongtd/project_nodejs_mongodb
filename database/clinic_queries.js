@@ -1,5 +1,4 @@
 // Script Truy vấn Cơ sở dữ liệu Phòng khám
-// Ngày: 15/04/2025
 
 // 1. Liệt kê danh sách các loại bệnh được các bệnh nhân mắc phải trong một tháng, sắp xếp theo số bệnh nhân giảm dần
 function getDiseaseStatsByMonth(year, month) {
@@ -7,18 +6,18 @@ function getDiseaseStatsByMonth(year, month) {
   const targetMonth = parseInt(month);
   const targetYear = parseInt(year);
   
-  // Tạo phạm vi ngày cho tháng được chỉ định
-  const startDate = new Date(targetYear, targetMonth - 1, 1);
-  const endDate = new Date(targetYear, targetMonth, 0);
-  endDate.setHours(23, 59, 59, 999); // Đặt thời gian thành cuối ngày
-  
   print(`\n=== THỐNG KÊ BỆNH TRONG THÁNG ${targetMonth}/${targetYear} ===\n`);
   
-  // Tìm tất cả các lần khám trong tháng đã chỉ định
+  // Sử dụng toán tử MongoDB để lọc theo năm và tháng - tránh vấn đề với ngày tháng
   const pipeline = [
     {
       $match: {
-        ngay_vao: { $gte: startDate, $lte: endDate }
+        $expr: {
+          $and: [
+            { $eq: [{ $year: "$ngay_vao" }, targetYear] },
+            { $eq: [{ $month: "$ngay_vao" }, targetMonth] }
+          ]
+        }
       }
     },
     {
@@ -93,11 +92,6 @@ function calculateSalaries(year, month) {
   const targetMonth = parseInt(month);
   const targetYear = parseInt(year);
   
-  // Tạo phạm vi ngày cho tháng được chỉ định
-  const startDate = new Date(targetYear, targetMonth - 1, 1);
-  const endDate = new Date(targetYear, targetMonth, 0);
-  endDate.setHours(23, 59, 59, 999); // Đặt thời gian thành cuối ngày
-  
   print(`\n=== BẢNG LƯƠNG THÁNG ${targetMonth}/${targetYear} ===\n`);
   
   // 1. Tính lương Bác sĩ
@@ -113,12 +107,18 @@ function calculateSalaries(year, month) {
   print("|-----|--------|-------------------------|--------------|--------------|--------------|");
   
   const doctorSalaries = doctors.map(doctor => {
-    // Tìm tất cả bệnh nhân đã kết thúc điều trị trong tháng
+    // Tìm tất cả bệnh nhân đã kết thúc điều trị trong tháng - sử dụng $year và $month
     const completedTreatments = db.visits.aggregate([
       {
         $match: {
           ma_bacsi: doctor.ma_bacsi,
-          ngay_ra: { $gte: startDate, $lte: endDate }
+          ngay_ra: { $exists: true, $ne: null }, // Đảm bảo ngay_ra tồn tại và không null
+          $expr: {
+            $and: [
+              { $eq: [{ $year: { $toDate: "$ngay_ra" } }, targetYear] },
+              { $eq: [{ $month: { $toDate: "$ngay_ra" } }, targetMonth] }
+            ]
+          }
         }
       },
       {
@@ -175,7 +175,7 @@ function calculateSalaries(year, month) {
   print("|-----|--------|-------------------------|--------------|--------------|--------------|");
   
   const nurseSalaries = nurses.map(nurse => {
-    // Đếm số lần phân công trong tháng
+    // Đếm số lần phân công trong tháng - sử dụng $year và $month
     const assignments = db.nurseAssignments.aggregate([
       {
         $match: { ma_yta: nurse.ma_yta }
@@ -188,9 +188,16 @@ function calculateSalaries(year, month) {
           as: "visit"
         }
       },
+      { $unwind: "$visit" }, // Unwind trước khi đối sánh
       {
         $match: {
-          "visit.ngay_vao": { $gte: startDate, $lte: endDate }
+          "visit.ngay_vao": { $exists: true, $ne: null }, // Đảm bảo ngay_vao tồn tại và không null
+          $expr: {
+            $and: [
+              { $eq: [{ $year: { $toDate: "$visit.ngay_vao" } }, targetYear] },
+              { $eq: [{ $month: { $toDate: "$visit.ngay_vao" } }, targetMonth] }
+            ]
+          }
         }
       },
       { $count: "total" }
@@ -379,18 +386,18 @@ function calculateRevenue(year, month) {
   const targetMonth = parseInt(month);
   const targetYear = parseInt(year);
   
-  // Tạo phạm vi ngày cho tháng được chỉ định
-  const startDate = new Date(targetYear, targetMonth - 1, 1);
-  const endDate = new Date(targetYear, targetMonth, 0);
-  endDate.setHours(23, 59, 59, 999); // Đặt thời gian thành cuối ngày
-  
   print(`\n=== BÁO CÁO DOANH THU THÁNG ${targetMonth}/${targetYear} ===\n`);
   
-  // 1. Tính doanh thu từ khám chữa bệnh
+  // 1. Tính doanh thu từ khám chữa bệnh - sử dụng $year và $month
   const medicalRevenue = db.visits.aggregate([
     {
       $match: {
-        ngay_vao: { $gte: startDate, $lte: endDate }
+        $expr: {
+          $and: [
+            { $eq: [{ $year: "$ngay_vao" }, targetYear] },
+            { $eq: [{ $month: "$ngay_vao" }, targetMonth] }
+          ]
+        }
       }
     },
     {
@@ -405,7 +412,7 @@ function calculateRevenue(year, month) {
   const totalMedicalRevenue = medicalRevenue.length > 0 ? medicalRevenue[0].total : 0;
   const totalVisits = medicalRevenue.length > 0 ? medicalRevenue[0].count : 0;
   
-  // 2. Tính doanh thu từ bán thuốc
+  // 2. Tính doanh thu từ bán thuốc - sử dụng $year và $month
   const medicineRevenue = db.prescriptions.aggregate([
     {
       $lookup: {
@@ -416,8 +423,16 @@ function calculateRevenue(year, month) {
       }
     },
     {
+      $unwind: "$visit"
+    },
+    {
       $match: {
-        "visit.ngay_vao": { $gte: startDate, $lte: endDate }
+        $expr: {
+          $and: [
+            { $eq: [{ $year: "$visit.ngay_vao" }, targetYear] },
+            { $eq: [{ $month: "$visit.ngay_vao" }, targetMonth] }
+          ]
+        }
       }
     },
     {
@@ -442,12 +457,17 @@ function calculateRevenue(year, month) {
   print(`---------------------------------------`);
   print(`   TỔNG DOANH THU:          ${formatCurrency(totalRevenue)}`);
   
-  // Chi tiết theo từng bệnh
+  // Chi tiết theo từng bệnh - sử dụng $year và $month
   print("\n=== CHI TIẾT THEO BỆNH ===");
   const revenueByDisease = db.visits.aggregate([
     {
       $match: {
-        ngay_vao: { $gte: startDate, $lte: endDate }
+        $expr: {
+          $and: [
+            { $eq: [{ $year: "$ngay_vao" }, targetYear] },
+            { $eq: [{ $month: "$ngay_vao" }, targetMonth] }
+          ]
+        }
       }
     },
     {
@@ -527,25 +547,25 @@ function formatCurrency(amount) {
 }
 
 // Phần thực thi chính
-// Bỏ comment hàm bạn muốn chạy
 
 // Yêu cầu 1: Liệt kê danh sách các loại bệnh trong tháng
 // getDiseaseStatsByMonth(2025, 3); // Tháng 3, năm 2025
 
 // Yêu cầu 2: Tính lương bác sĩ và y tá
-// calculateSalaries(2025, 3); // Tháng 3, năm 2025
+calculateSalaries(2025, 3); // Tháng 3, năm 2025
 
 // Yêu cầu 3: Hiển thị thông tin bệnh nhân và lịch sử khám chữa bệnh
-// getPatientHistory("BN001"); // Tìm theo mã bệnh nhân
+getPatientHistory("BN001"); // Tìm theo mã bệnh nhân
 // getPatientHistory("Nguyễn Văn L"); // Tìm theo tên bệnh nhân
 
 // Yêu cầu 4: Tính doanh thu phòng khám
-// calculateRevenue(2025, 3); // Tháng 3, năm 2025
+calculateRevenue(2025, 3); // Tháng 3, năm 2025
 
 // Báo cáo tổng hợp theo yêu cầu
 function generateComprehensiveReport(year, month) {
   const targetMonth = parseInt(month);
   const targetYear = parseInt(year);
+  
   
   print(`\n========================================================`);
   print(`      BÁO CÁO TỔNG HỢP THÁNG ${targetMonth}/${targetYear}`);
@@ -566,13 +586,15 @@ function generateComprehensiveReport(year, month) {
 }
 
 // Chạy báo cáo tổng hợp cho tháng hiện tại
-const today = new Date();
-generateComprehensiveReport(today.getFullYear(), today.getMonth() + 1);
+// const today = new Date();
+// generateComprehensiveReport(today.getFullYear(), today.getMonth() + 1);
 
 // Hướng dẫn sử dụng
+/*
 print("\nHƯỚNG DẪN SỬ DỤNG:");
 print("1. Để xem thống kê bệnh: getDiseaseStatsByMonth(năm, tháng)");
 print("2. Để tính lương: calculateSalaries(năm, tháng)");
 print("3. Để xem thông tin bệnh nhân: getPatientHistory(\"mã_BN\" hoặc \"tên_BN\")");
 print("4. Để tính doanh thu: calculateRevenue(năm, tháng)");
 print("5. Để tạo báo cáo tổng hợp: generateComprehensiveReport(năm, tháng)");
+*/
