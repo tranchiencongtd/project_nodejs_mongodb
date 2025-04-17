@@ -162,9 +162,9 @@ db.doctors.insertMany([
   {
     ma_bacsi: "BS001",
     so_cmt: "001234567",
-    ho_ten: "Nguyễn Văn A",
+    ho_ten: "Nguyễn Văn Anh",
     ngay_sinh: new Date("1975-05-15"),
-    dia_chi: "123 Lê Lợi, Quận 1, TP.HCM",
+    dia_chi: "123 Lạch Tray, Quận Ngô Quyền, Hải Phòng",
     bac_nghe: "Bác sĩ chuyên khoa II",
     tham_nien: 20,
     trinh_do: "Tiến sĩ Y khoa",
@@ -173,9 +173,9 @@ db.doctors.insertMany([
   {
     ma_bacsi: "BS002",
     so_cmt: "002345678",
-    ho_ten: "Trần Thị B",
+    ho_ten: "Trần Thị Bình",
     ngay_sinh: new Date("1980-10-20"),
-    dia_chi: "456 Nguyễn Huệ, Quận 1, TP.HCM",
+    dia_chi: "456 Trần Phú, Quận Ba Đình, Hà Nội",
     bac_nghe: "Bác sĩ chuyên khoa I",
     tham_nien: 15,
     trinh_do: "Thạc sĩ Y khoa",
@@ -184,9 +184,9 @@ db.doctors.insertMany([
   {
     ma_bacsi: "BS003",
     so_cmt: "003456789",
-    ho_ten: "Lê Văn C",
+    ho_ten: "Lê Văn Cường",
     ngay_sinh: new Date("1985-12-10"),
-    dia_chi: "789 Võ Văn Tần, Quận 3, TP.HCM",
+    dia_chi: "789 Lê Thánh Tông, Thành phố Hạ Long, Quảng Ninh",
     bac_nghe: "Bác sĩ đa khoa",
     tham_nien: 10,
     trinh_do: "Bác sĩ Y khoa",
@@ -195,9 +195,9 @@ db.doctors.insertMany([
   {
     ma_bacsi: "BS004",
     so_cmt: "004567890",
-    ho_ten: "Phạm Thị D",
+    ho_ten: "Phạm Thị Diệu",
     ngay_sinh: new Date("1978-08-25"),
-    dia_chi: "101 Nguyễn Du, Quận 1, TP.HCM",
+    dia_chi: "101 Lý Thái Tổ, Quận Hoàn Kiếm, Hà Nội",
     bac_nghe: "Bác sĩ chuyên khoa II",
     tham_nien: 18,
     trinh_do: "Tiến sĩ Y khoa",
@@ -206,9 +206,9 @@ db.doctors.insertMany([
   {
     ma_bacsi: "BS005",
     so_cmt: "005678901",
-    ho_ten: "Võ Văn E",
+    ho_ten: "Võ Văn Đức",
     ngay_sinh: new Date("1982-04-30"),
-    dia_chi: "202 Lý Thường Kiệt, Quận 10, TP.HCM",
+    dia_chi: "202 Quang Trung, Thành phố Nam Định, Nam Định",
     bac_nghe: "Bác sĩ chuyên khoa I",
     tham_nien: 13,
     trinh_do: "Thạc sĩ Y khoa",
@@ -221,9 +221,9 @@ db.nurses.insertMany([
   {
     ma_yta: "YT001",
     so_cmt: "101234567",
-    ho_ten: "Nguyễn Thị F",
+    ho_ten: "Nguyễn Thị Phương",
     ngay_sinh: new Date("1990-01-15"),
-    dia_chi: "111 Cách Mạng Tháng 8, Quận 3, TP.HCM",
+    dia_chi: "111 Nguyễn Trãi, Quận Thanh Xuân, Hà Nội",
     so_dien_thoai: "0971234567",
     trinh_do: "Điều dưỡng đại học",
     tham_nien: 7
@@ -231,9 +231,9 @@ db.nurses.insertMany([
   {
     ma_yta: "YT002",
     so_cmt: "102345678",
-    ho_ten: "Trần Văn G",
+    ho_ten: "Trần Văn Giang",
     ngay_sinh: new Date("1992-05-20"),
-    dia_chi: "222 Nguyễn Trãi, Quận 5, TP.HCM",
+    dia_chi: "222 Hùng Vương, Thành phố Việt Trì, Phú Thọ",
     so_dien_thoai: "0972345678",
     trinh_do: "Điều dưỡng cao đẳng",
     tham_nien: 5
@@ -241,9 +241,9 @@ db.nurses.insertMany([
   {
     ma_yta: "YT003",
     so_cmt: "103456789",
-    ho_ten: "Lê Thị H",
+    ho_ten: "Lê Thị Hương",
     ngay_sinh: new Date("1988-11-25"),
-    dia_chi: "333 Võ Thị Sáu, Quận 3, TP.HCM",
+    dia_chi: "333 Lê Lợi, Thành phố Thái Bình, Thái Bình",
     so_dien_thoai: "0973456789",
     trinh_do: "Điều dưỡng trung cấp",
     tham_nien: 9
@@ -251,9 +251,9 @@ db.nurses.insertMany([
   {
     ma_yta: "YT004",
     so_cmt: "104567890",
-    ho_ten: "Phạm Văn I",
+    ho_ten: "Phạm Văn Hùng",
     ngay_sinh: new Date("1993-07-10"),
-    dia_chi: "444 Điện Biên Phủ, Quận Bình Thạnh, TP.HCM",
+    dia_chi: "444 Trần Hưng Đạo, Thành phố Bắc Ninh, Bắc Ninh",
     so_dien_thoai: "0974567890",
     trinh_do: "Điều dưỡng đại học",
     tham_nien: 4
@@ -261,9 +261,9 @@ db.nurses.insertMany([
   {
     ma_yta: "YT005",
     so_cmt: "105678901",
-    ho_ten: "Võ Thị K",
+    ho_ten: "Võ Thị Khánh",
     ngay_sinh: new Date("1991-03-05"),
-    dia_chi: "555 Nguyễn Thị Minh Khai, Quận 1, TP.HCM",
+    dia_chi: "555 Hai Bà Trưng, Quận Hai Bà Trưng, Hà Nội",
     so_dien_thoai: "0975678901",
     trinh_do: "Điều dưỡng cao đẳng",
     tham_nien: 6
@@ -275,41 +275,41 @@ db.patients.insertMany([
   {
     ma_benhnhan: "BN001",
     so_cmt: "201234567",
-    ho_ten: "Nguyễn Văn L",
+    ho_ten: "Nguyễn Văn Lâm",
     ngay_sinh: new Date("1970-06-10"),
-    dia_chi: "11 Trần Hưng Đạo, Quận 1, TP.HCM",
+    dia_chi: "11 Nguyễn Văn Cừ, Quận Long Biên, Hà Nội",
     so_dien_thoai: "0981234567"
   },
   {
     ma_benhnhan: "BN002",
     so_cmt: "202345678",
-    ho_ten: "Trần Thị M",
+    ho_ten: "Trần Thị Mai",
     ngay_sinh: new Date("1985-09-15"),
-    dia_chi: "22 Lê Thánh Tôn, Quận 1, TP.HCM",
+    dia_chi: "22 Kim Mã, Quận Ba Đình, Hà Nội",
     so_dien_thoai: "0982345678"
   },
   {
     ma_benhnhan: "BN003",
     so_cmt: "203456789",
-    ho_ten: "Lê Văn N",
+    ho_ten: "Lê Văn Nam",
     ngay_sinh: new Date("1965-12-20"),
-    dia_chi: "33 Nguyễn Đình Chiểu, Quận 3, TP.HCM",
+    dia_chi: "33 Bạch Đằng, Quận Hồng Bàng, Hải Phòng",
     so_dien_thoai: "0983456789"
   },
   {
     ma_benhnhan: "BN004",
     so_cmt: "204567890",
-    ho_ten: "Phạm Thị O",
+    ho_ten: "Phạm Thị Oanh",
     ngay_sinh: new Date("1995-03-25"),
-    dia_chi: "44 Phan Xích Long, Quận Phú Nhuận, TP.HCM",
+    dia_chi: "44 Trần Nhân Tông, Thành phố Bắc Giang, Bắc Giang",
     so_dien_thoai: "0984567890"
   },
   {
     ma_benhnhan: "BN005",
     so_cmt: "205678901",
-    ho_ten: "Võ Văn P",
+    ho_ten: "Võ Văn Phong",
     ngay_sinh: new Date("1980-07-30"),
-    dia_chi: "55 Lý Tự Trọng, Quận 1, TP.HCM",
+    dia_chi: "55 Nguyễn Chí Thanh, Quận Đống Đa, Hà Nội",
     so_dien_thoai: "0985678901"
   }
 ]);
